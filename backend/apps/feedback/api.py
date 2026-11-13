@@ -21,7 +21,7 @@ from .selector import prepare_feedback_inputs
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 OPENAI_BASE = os.getenv("OPENAI_BASE", "https://api.openai.com/v1")
-DEFAULT_GEN_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
+DEFAULT_GEN_MODEL = os.getenv("OPENAI_MODEL", "gpt-6-luna")
 DEFAULT_GEN_TEMP = float(os.getenv("OPENAI_TEMPERATURE", "0.2"))
 
 
@@ -82,6 +82,9 @@ def call_llm(
             {"role": "user", "content": prompt},
         ],
     }
+    if model.startswith("gpt-6-luna"):
+        # 기존 temperature 설정을 유지하도록 추론을 끈다.
+        body["reasoning_effort"] = "none"
 
     response = requests.post(url, headers=headers, json=body, timeout=45)
     response.raise_for_status()
